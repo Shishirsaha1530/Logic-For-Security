@@ -1,0 +1,26 @@
+Protocol: PhotoAuthorization_w6_badpw
+
+Types:
+  Agent A, B, P, idp;
+  Number N;
+  Function pk, pw, h, photos, req, tok, use, resp;
+
+Knowledge:
+  A: A, B, P, idp, pk(idp), pk(P), pw(A,idp), h, req, tok, use, resp;
+  B: A, B, P, idp, pk(B), pk(P), pk(idp), inv(pk(B)), photos(A), req, tok, use, resp;
+  P: A, B, P, idp, pk(B), pk(P), pk(idp), inv(pk(P)), req, tok, use, resp;
+  idp: A, B, P, idp, pk(B), pk(P), pk(idp), inv(pk(idp)), pw(A,idp), h, req, tok, use, resp;
+
+Actions:
+  A   -> idp : req, A, P, B
+  idp -> A   : N
+  A   -> idp : h(pw(A,idp),N)
+
+  idp -> A   : {tok, A, P, B}(inv(pk(idp)))
+  A   -> P   : {tok, A, P, B}(inv(pk(idp)))
+  P   -> B   : {use, P, {tok, A, P, B}(inv(pk(idp)))}(pk(B))
+  B   -> P   : {resp, B, photos(A)}(pk(P))
+
+Goals:
+  B authenticates idp on tok, A, P, B
+  pw(A,idp) guessable secret between A, idp

@@ -1,0 +1,19 @@
+Protocol: PhotoKeyLookupWeek4
+
+Types:
+  Agent A,p,idp;
+  Number Nk;
+  Function pk,sigk;
+  Format fkeyreq,fkeyresp;
+
+Knowledge:
+  A: A,p,idp,pk(idp),sigk(idp);
+  p: A,p,idp,inv(pk(p)),inv(sigk(p)),pk(p),sigk(idp);
+  idp: A,p,idp,inv(pk(idp)),inv(sigk(idp)),pk(idp),pk(p),sigk(idp);
+
+Actions:
+  A   -> idp : {fkeyreq(A,p,Nk)}pk(idp)
+  idp -> A   : {fkeyresp(p,pk(p),Nk)}inv(sigk(idp))
+
+Goals:
+  A weakly authenticates idp on p,pk(p),Nk

@@ -1,0 +1,29 @@
+Protocol: PhotoAccessWeek4_Main
+
+Types:
+  Agent A,p,b,idp;
+  Number Na,Nidp,Np,Folder,Right,Photos;
+  Function pk,sigk,hash,password;
+  Format fauthreq,fchall,fauthproof,ftok,fdeliver,fuse,fresp;
+
+Knowledge:
+  A: A,p,b,idp,pk(idp),pk(p),sigk(idp),hash,password;
+  p: A,p,b,idp,inv(pk(p)),inv(sigk(p)),pk(b),pk(p),sigk(idp),sigk(b);
+  b: A,p,b,idp,inv(pk(b)),inv(sigk(b)),sigk(p),sigk(b),sigk(idp),pk(p);
+  idp: A,p,b,idp,inv(pk(idp)),inv(sigk(idp)),pk(idp),pk(p),hash,password,sigk(idp);
+
+Actions:
+  A   -> idp : {fauthreq(A,p,b,Folder,Right,Na)}pk(idp)
+  idp -> A   : fchall(Nidp)
+  A   -> idp : {fauthproof(A,hash(password(A,idp),Nidp),Na)}pk(idp)
+
+  idp -> A   : {ftok(A,p,b,Folder,Right,Na)}inv(sigk(idp))
+  A   -> p   : {fdeliver(A,b,{ftok(A,p,b,Folder,Right,Na)}inv(sigk(idp)))}pk(p)
+
+  p   -> b   : {{fuse(p,{ftok(A,p,b,Folder,Right,Na)}inv(sigk(idp)),Np)}inv(sigk(p))}pk(b)
+  b   -> p   : {{fresp(A,p,b,Folder,Right,Na,Np,Photos)}inv(sigk(b))}pk(p)
+
+Goals:
+  p weakly authenticates A on Na
+  b weakly authenticates p on Np
+  Photos secret between b,p

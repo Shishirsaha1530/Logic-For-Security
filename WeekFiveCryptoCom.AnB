@@ -1,0 +1,22 @@
+Protocol: PhotoAuthorization_w5_crypto
+
+Types:
+  Agent A, B, P, idp;
+  Function pk, photos, pw, f1, f2, f3, f4;
+
+Knowledge:
+  A: A, B, P, idp, pk(B), pk(P), pk(idp), pw(A,idp), f1, f2, f3, f4;
+  B: A, B, P, idp, pk(B), pk(P), pk(idp), inv(pk(B)), photos(A), f1, f2, f3, f4;
+  P: A, B, P, idp, pk(B), pk(P), pk(idp), inv(pk(P)), f1, f2, f3, f4;
+  idp: A, B, P, idp, pk(B), pk(P), pk(idp), inv(pk(idp)), pw(A,idp), f1, f2, f3, f4;
+
+Actions:
+  A   -> idp : {f1, A, P, B, pw(A,idp)}(pk(idp))
+  idp -> A   : {f2, A, P, B}(inv(pk(idp)))
+  A   -> P   : {f2, A, P, B}(inv(pk(idp)))
+  P   -> B   : {f3, P, {f2, A, P, B}(inv(pk(idp)))}(pk(B))
+  B   -> P   : {f4, B, photos(A)}(pk(P))
+
+Goals:
+  B authenticates idp on f2, A, P, B
+  photos(A) secret between B, P

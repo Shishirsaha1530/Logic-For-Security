@@ -1,0 +1,28 @@
+Protocol: PhotoAccessWeek3
+
+Types:
+  Agent A,p,b,idp;
+  Number Na,Nidp,Np,Folder,Right,Photos;
+  Function pk,sigk,hash,password,tagTok,tagUse,tagResp;
+
+Knowledge:
+  A: A,p,b,idp,pk(idp),pk(p),pk(b),sigk(idp),hash,password,tagTok;
+  p: A,p,b,idp,inv(pk(p)),inv(sigk(p)),pk(b),pk(p),sigk(idp),sigk(b),tagTok,tagUse,tagResp;
+  b: A,p,b,idp,inv(pk(b)),sigk(p),inv(sigk(b)),sigk(b),sigk(idp),pk(p),tagTok,tagUse,tagResp;
+  idp: A,p,b,idp,inv(pk(idp)),inv(sigk(idp)),sigk(idp),hash,password,tagTok;
+
+Actions:
+  A   -> idp : {A,p,b,Folder,Right,Na}pk(idp)
+  idp -> A   : Nidp
+  A   -> idp : hash(password(A,idp),Nidp)
+
+  idp -> A   : {tagTok,A,p,b,Folder,Right,Na}inv(sigk(idp))
+  A   -> p   : {A,{tagTok,A,p,b,Folder,Right,Na}inv(sigk(idp))}pk(p)
+
+  p   -> b   : {{tagUse,p,{tagTok,A,p,b,Folder,Right,Na}inv(sigk(idp)),Np}inv(sigk(p))}pk(b)
+  b   -> p   : {{tagResp,A,p,b,Folder,Right,Na,Np,Photos}inv(sigk(b))}pk(p)
+
+Goals:
+  p weakly authenticates A on Na
+  b weakly authenticates p on Np
+  Photos secret between b,p

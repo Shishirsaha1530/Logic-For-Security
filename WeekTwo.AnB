@@ -1,0 +1,24 @@
+Protocol: PhotoAuthorization_Week2
+
+Types:
+  Agent A, B, P, idp;
+  Number Na, Folder, Right;
+  Function pk, photos, req, tok;
+
+Knowledge:
+  A: A, B, P, idp, pk(idp), req, tok, photos(A);
+  B: A, B, P, idp, pk(B), pk(P), pk(idp), inv(pk(B)), req, tok, photos(A);
+  P: A, B, P, idp, pk(B), pk(P), pk(idp), inv(pk(P)), req, tok;
+  idp: A, B, P, idp, pk(B), pk(P), pk(idp), inv(pk(idp)), req, tok;
+
+Actions:
+  A   -> idp : {req,A,P,B,Folder,Right,Na}pk(idp)
+  idp -> A   : {tok,A,P,B,Folder,Right,Na}inv(pk(idp))
+  A   -> P   : {tok,A,P,B,Folder,Right,Na}inv(pk(idp))
+  P   -> B   : {{tok,A,P,B,Folder,Right,Na}inv(pk(idp))}pk(B)
+  B   -> P   : {photos(A)}pk(P)
+
+Goals:
+  P authenticates idp on A, P, B, Folder, Right, Na
+  B authenticates idp on A, P, B, Folder, Right, Na
+  photos(A) secret between A, B, P
