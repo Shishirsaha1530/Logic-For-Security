@@ -1,9 +1,3 @@
-Below is a **clean GitHub README** based on your report. It is written in **typical GitHub project style** so it looks professional if you upload your protocol project repository.
-
-You can copy and paste this directly into **`README.md`**.
-
----
-
 # Secure Photo Authorization Protocol
 
 **Course:** 02244 Logic for Security
